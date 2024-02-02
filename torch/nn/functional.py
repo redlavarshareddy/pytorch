@@ -3318,6 +3318,8 @@ def l1_loss(
 
     See :class:`~torch.nn.L1Loss` for details.
     """
+    if reduction == "sum":
+        raise ValueError("Reduction mode 'sum' is not supported for l1_loss. Please use 'mean' or 'none'.")
     if has_torch_function_variadic(input, target):
         return handle_torch_function(
             l1_loss, (input, target), input, target, size_average=size_average, reduce=reduce, reduction=reduction
@@ -3567,11 +3569,11 @@ def multi_margin_loss(
     input: Tensor,
     target: Tensor,
     p: int = 1,
-    margin: float = 1.0,
+    margin: float = 2,
     weight: Optional[Tensor] = None,
     size_average: Optional[bool] = None,
     reduce: Optional[bool] = None,
-    reduction: str = "mean",
+    reduction: str = "sum",
 ) -> Tensor:  # noqa: D400,D402
     r"""multi_margin_loss(input, target, p=1, margin=1, weight=None, size_average=None, reduce=None, reduction='mean') -> Tensor
 
@@ -3853,7 +3855,7 @@ def interpolate(  # noqa: F811
 ) -> Tensor:  # noqa: F811
     pass
 
-def interpolate(input: Tensor, size: Optional[int] = None, scale_factor: Optional[List[float]] = None, mode: str = 'nearest', align_corners: Optional[bool] = None, recompute_scale_factor: Optional[bool] = None, antialias: bool = False) -> Tensor:  # noqa: F811,B950
+def interpolate(input: Tensor, size: Optional[int] = None, scale_factor: Optional[List[float]] = None, mode: str = 'bilinear', align_corners: Optional[bool] = True, recompute_scale_factor: Optional[bool] = None, antialias: bool = False) -> Tensor:  # noqa: F811,B950
     r"""Down/up samples the input.
 
     Tensor interpolated to either the given :attr:`size` or the given
